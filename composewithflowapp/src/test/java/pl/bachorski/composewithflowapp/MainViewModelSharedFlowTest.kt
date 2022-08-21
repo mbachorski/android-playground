@@ -21,7 +21,7 @@ class MainViewModelSharedFlowTest {
 
     @Test
     fun `squaredNumber, number properly squared`() = runBlocking {
-        val job = launch {
+        val job = launch { // run on separate coroutine simultaneously with viewModel.squaredNumber(3)
             viewModel.sharedFlow.test {
                 val emission = awaitItem()
                 assertThat(emission).isEqualTo(9)
