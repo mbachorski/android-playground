@@ -2,6 +2,7 @@ package pl.bachorski.composewithflowapp
 
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 import org.junit.Before
@@ -20,10 +21,15 @@ class MainViewModelSharedFlowTest {
 
     @Test
     fun `squaredNumber, number properly squared`() = runBlocking {
-        viewModel.sharedFlow.test {
-            viewModel.squaredNumber(3)
-            val emission = awaitItem()
-            assertThat(emission).isEqualTo(9)
+        val job = launch {
+            viewModel.sharedFlow.test {
+                val emission = awaitItem()
+                assertThat(emission).isEqualTo(9)
+                cancelAndConsumeRemainingEvents()
+            }
         }
+        viewModel.squaredNumber(3)
+        job.join()
+        job.cancel()
     }
 }
