@@ -17,26 +17,26 @@ class MainViewModelSharedFlow(
     val sharedFlow = _sharedFlow.asSharedFlow()
 
     init {
-        Log.v(TAG_SHARED_FLOW, "MainViewModelSharedFlow init")
+        println("$TAG_SHARED_FLOW  MainViewModelSharedFlow init")
 //        squaredNumber(3) // this works before subscription because we use replay above
 
         viewModelScope.launch(dispatchers.main) {
             sharedFlow.collect { // not collectLatest because we want to have all one time events delivered
                 delay(2000L)
-                Log.v(TAG_SHARED_FLOW, "SharedFlow _1_ collect: $it")
+                println("$TAG_SHARED_FLOW  SharedFlow _1_ collect: $it")
             }
         }
         viewModelScope.launch(dispatchers.main) {
             sharedFlow.collect { // not collectLatest because we want to have all one time events delivered
                 delay(3000L)
-                Log.v(TAG_SHARED_FLOW, "SharedFlow _2_ collect: $it")
+                println("$TAG_SHARED_FLOW  SharedFlow _2_ collect: $it")
             }
         }
         squaredNumber(3)
     }
 
     fun squaredNumber(number: Int) {
-        Log.v(TAG_SHARED_FLOW, "squared number before operation: $number")
+        println("$TAG_SHARED_FLOW  squared number before operation: $number")
         viewModelScope.launch(dispatchers.main) {
             _sharedFlow.emit(number * number)
         }
