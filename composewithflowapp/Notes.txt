@@ -1,0 +1,4 @@
+- State flow - persists when orientation changes, saves state
+- Shared flow - for one time events like showing dialog
+- Compose can use stateFlow.collectAsState but its better not to use stateFlow at all since
+compose manages state by itself already
