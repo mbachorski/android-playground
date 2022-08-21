@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -43,7 +44,12 @@ class MainComposeWithFlowActivity : ComponentActivity() {
 
     // for xml example, this is not how its used with compose
     private val viewModelWithStateFlow: MainViewModelStateFlow by viewModels()
-    private val viewModelWithSharedFlow: MainViewModelSharedFlow by viewModels()
+    private val viewModelWithSharedFlow: MainViewModelSharedFlow by lazy {
+        ViewModelProvider(
+            this,
+            MainViewModelSharedFlowFactory(DefaultDispatchers())
+        )[MainViewModelSharedFlow::class.java]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +67,8 @@ class MainComposeWithFlowActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     Log.v(TAG, "Surface composing..")
-                    val viewModel = viewModel<MainViewModel>()
+                    val viewModel =
+                        viewModel<MainViewModel>(factory = MainViewModelFactory(DefaultDispatchers()))
                     val time = viewModel.countdownFlow.collectAsState(initial = 10)
                     FlowResult(text = time.value.toString())
 
@@ -70,7 +77,10 @@ class MainComposeWithFlowActivity : ComponentActivity() {
                     // shared flow - simulate one time event in compose
                     LaunchedEffect(key1 = true) {
                         viewModelWithSharedFlow.sharedFlow.collect { number ->
-                            Log.v(TAG_SHARED_FLOW, "Consuming shared flow event in compose $number")
+                            Log.v(
+                                TAG_SHARED_FLOW,
+                                "Consuming shared flow event in compose $number"
+                            )
                         }
                     }
                 }

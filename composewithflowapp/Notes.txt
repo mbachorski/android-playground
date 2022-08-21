@@ -2,3 +2,9 @@
 - Shared flow - for one time events like showing dialog
 - Compose can use stateFlow.collectAsState but its better not to use stateFlow at all since
 compose manages state by itself already
+
+Author repo: https://github.com/philipplackner/KotlinFlowsGuide
+https://www.youtube.com/watch?v=rk6aKkWqqcI
+
+- turbine - simplifies testing flows
+- truth - assertions
